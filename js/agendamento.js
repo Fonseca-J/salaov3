@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Feedback visual se não houver horários
         if (horariosGerados === 0) {
-            horaSelect.innerHTML = '<option value="" selected disabled>😢 Nenhum horário disponível</option>';
+            horaSelect.innerHTML = '<option value="" selected disabled> 😢 Nenhum horário disponível</option>';
         }
     }
 
@@ -101,13 +101,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return date.toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
         };
 
-        return `https://www.google.com/calendar/render?action=TEMPLATE` +
-               `&text=Agendamento+Shalon+Adonai` +
-               `&dates=${formatarParaGoogle(dataInicio)}/${formatarParaGoogle(dataFim)}` +
-               `&details=Cliente%3A+${encodeURIComponent(dados.nome)}%0ATelefone%3A+${encodeURIComponent(dados.telefone)}` +
-               `%0AServiços%3A+${encodeURIComponent(dados.servicos)}` +
-               `&location=Salão+Shalon+Adonai`;
-    }
+        // E-mail do salão como convidado
+    const emailSalon = 'dantasandrew05@gmail.com'; // Substitua pelo e-mail real
+    
+
+    return `https://www.google.com/calendar/render?action=TEMPLATE` +
+    `&text=Agendamento+Shalon+Adonai+-+${encodeURIComponent(dados.nome.split(' ')[0])}` +
+    `&dates=${formatarParaGoogle(dataInicio)}/${formatarParaGoogle(dataFim)}` +
+    `&details=Cliente%3A+${encodeURIComponent(dados.nome)}%0ATelefone%3A+${encodeURIComponent(dados.telefone)}` +
+    `%0AServiços%3A+${encodeURIComponent(dados.servicos)}%0A%0AEndereço%3A+R.+Nhatumani,+496` +
+    `&location=Salão+Shalon+Adonai,+R.+Nhatumani,+496` +
+    `&add=${encodeURIComponent(emailSalon)}` + // Adiciona o salão como convidado
+    `&sf=true` + // Mostra o formulário de convite
+    `&output=xml`; // Formato de saída
+}
 
     // 6. EVENT LISTENERS
     // ==================
@@ -146,6 +153,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mostra modal
         new bootstrap.Modal(document.getElementById('confirmacaoModal')).show();
     });
+
+    // No evento submit, após preparar os dados:
+const whatsappLink = `https://wa.me/5511967036990?text=${encodeURIComponent(
+    `Olá Shalon Adonai! Confirme meu agendamento:\n\n` +
+    `*Nome:* ${dados.nome}\n` +
+    `*Telefone:* ${dados.telefone}\n` +
+    `*Data:* ${dados.data} às ${dados.hora}\n` +
+    `*Serviços:* ${dados.servicos}\n\n` +
+    `Por favor, confirme recebimento.`
+)}`;
+
+document.getElementById('whatsappLink').href = whatsappLink;
 
     // 7. INICIALIZAÇÃO
     // ================
